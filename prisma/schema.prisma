@@ -9,8 +9,24 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  name      String?
-  age       Int?
+  passwordHash String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  tasks     Task[] 
 }
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title     String
+  description String?
+  dueAt   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId      Int      
+    // Настройка связи: userId ссылается на id в модели User
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, dueAt])
+}
+

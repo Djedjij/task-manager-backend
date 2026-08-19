@@ -22,4 +22,11 @@ usersRouter.post(
   }),
 );
 
+usersRouter.get(
+  "/",
+  asyncWrapper(async (req: Request, res: Response) => {
+    UsersController.getAllUsers(req, res);
+  }),
+);
+
 export default usersRouter;

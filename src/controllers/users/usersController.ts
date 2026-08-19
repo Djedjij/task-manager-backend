@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
+// const UserService = require("../../services/users/userService");
+import { UserService } from "../../services/users/userService";
 
 class UsersController {
   async register(req: Request, res: Response) {
-    console.log(req.body);
-    res.status(200).json("Success request");
+    try {
+      const { email, password } = req.body;
+      const user = await UserService.createUser(email, password);
+      res.status(201).json(user);
+    } catch (error) {
+      res.status(400).json({ error });
+    }
   }
 
   async login(req: Request, res: Response) {
@@ -13,6 +20,15 @@ class UsersController {
 
   async logout(req: Request, res: Response) {
     console.log(req.body);
+  }
+
+  async getAllUsers(req: Request, res: Response) {
+    try {
+      const users = await UserService.getUsers();
+      res.status(201).json(users);
+    } catch (error) {
+      res.status(400).json({ error });
+    }
   }
 }
 
