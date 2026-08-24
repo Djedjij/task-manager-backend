@@ -7,7 +7,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email     String   @unique
   passwordHash String 
   createdAt DateTime @default(now())
@@ -16,14 +16,14 @@ model User {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title     String
   description String?
   dueAt   DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId      Int      
-    // Настройка связи: userId ссылается на id в модели User
+   userId    String   @db.Uuid 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])

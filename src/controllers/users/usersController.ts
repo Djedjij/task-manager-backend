@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-// const UserService = require("../../services/users/userService");
 import { UserService } from "../../services/users/userService";
 
 class UsersController {
@@ -25,9 +24,22 @@ class UsersController {
   async getAllUsers(req: Request, res: Response) {
     try {
       const users = await UserService.getUsers();
-      res.status(201).json(users);
+      res.status(200).json(users);
     } catch (error) {
       res.status(400).json({ error });
+    }
+  }
+
+  async getUserById(req: Request, res: Response) {
+    const id = req.params.id;
+
+    try {
+      if (typeof id === "string") {
+        const user = await UserService.getUserById(id);
+        res.status(200).json(user);
+      }
+    } catch (error) {
+      res.status(400).json(error);
     }
   }
 }

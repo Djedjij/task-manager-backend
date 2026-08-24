@@ -29,4 +29,11 @@ usersRouter.get(
   }),
 );
 
+usersRouter.get(
+  "/:id",
+  asyncWrapper(async (req: Request, res: Response) => {
+    UsersController.getUserById(req, res);
+  }),
+);
+
 export default usersRouter;

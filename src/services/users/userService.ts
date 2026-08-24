@@ -10,4 +10,8 @@ export const UserService = {
   async getUsers() {
     return await prisma.user.findMany();
   },
+
+  async getUserById(id: string) {
+    return await prisma.user.findUnique({ where: { id } });
+  },
 };
