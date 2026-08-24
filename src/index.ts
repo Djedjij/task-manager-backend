@@ -3,9 +3,18 @@ import express, { Request, Response, NextFunction } from "express";
 import correlator from "express-correlation-id";
 import cors from "cors";
 import { AppError } from "./errors/AppError";
+
+// middlewares
 import { errorMiddleware } from "./middlewares/errorMiddleware";
-import usersRouter from "../src/routes/users/routes";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
+
+// swagger для документации
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger";
+
+//routes
+import usersRouter from "./routes/userRouter";
+
 import { corsOptions } from "./helpers/corsOptions";
 import { prisma } from "./lib/prisma";
 
@@ -17,6 +26,7 @@ app.use(express.json());
 app.use(correlator());
 app.use(loggingMiddleware);
 app.use(cors(corsOptions));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/users", usersRouter);
