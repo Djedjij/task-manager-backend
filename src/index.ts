@@ -14,6 +14,7 @@ import { swaggerSpec } from "./swagger";
 
 //routes
 import usersRouter from "./routes/userRouter";
+import taskRouter from "./routes/taskRouter";
 
 import { corsOptions } from "./helpers/corsOptions";
 import { prisma } from "./lib/prisma";
@@ -30,6 +31,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/users", usersRouter);
+app.use("/tasks", taskRouter);
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
