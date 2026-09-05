@@ -1,25 +1,14 @@
-import swaggerJsdoc from "swagger-jsdoc";
+const swaggerAutogen = require("swagger-autogen")();
 
-const PORT = process.env.PORT ?? 5000;
-
-const options: swaggerJsdoc.Options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "ДокументацияAPI",
-      version: "1.0.0",
-      description: "Интерактивная документация для существующих эндпоиснтов",
-    },
-    servers: [
-      {
-        url: `http://localhost${5000}`,
-        description: "Локальный сервер разработки",
-      },
-    ],
+const doc = {
+  info: {
+    title: "Мой API",
+    description: "Документация сгенерирована автоматически",
   },
-  // Укажите пути к файлам, где вы будете писать комментарии.
-  // Например, ко всем файлам в папке routes или контроллерам
-  apis: ["./src/routes/*.ts", "./src/controllers/*.ts", "./src/app.ts"],
+  host: "localhost:5000",
 };
 
-export const swaggerSpec = swaggerJsdoc(options);
+const outputFile = "./swagger-output.json";
+const endpointsFiles = ["./routes/taskRouter.ts", "./routes/userRouter.ts"]; // Путь к вашим главным роутам
+
+swaggerAutogen(outputFile, endpointsFiles, doc);
