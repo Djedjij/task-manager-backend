@@ -17,7 +17,7 @@ export type UserSafeDto = Prisma.UserGetPayload<{
 export const UserService = {
   async createUser(email: string, password: string) {
     return await prisma.user.create({
-      data: { email, passwordHash: password },
+      data: { email, hashedPassword: password },
     });
   },
 

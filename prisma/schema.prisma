@@ -9,10 +9,12 @@ datasource db {
 model User {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email     String   @unique
-  passwordHash String 
+  hashedPassword String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   tasks     Task[] 
+  refreshToken String?
+  lastLoginAt DateTime?
 }
 
 model Task {
