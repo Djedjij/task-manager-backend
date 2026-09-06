@@ -1,29 +1,14 @@
 import express from "express";
 import { Request, Response } from "express";
 import { asyncWrapper } from "../helpers/asyncWrapper";
-import { validate } from "../middlewares/validationMiddleware";
 import UsersController from "../controllers/usersController";
-import { registerSchema } from "../schemas/userSchema";
+import { authenticate } from "../middlewares/authMiddleware";
 
 const usersRouter = express.Router();
 
-usersRouter.post(
-  "/login",
-  asyncWrapper(async (req: Request, res: Response) => {
-    UsersController.login(req, res);
-  }),
-);
-
-usersRouter.post(
-  "/register",
-  validate(registerSchema),
-  asyncWrapper(async (req: Request, res: Response) => {
-    UsersController.register(req, res);
-  }),
-);
-
 usersRouter.get(
   "/",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     UsersController.getAllUsers(req, res);
   }),
@@ -31,6 +16,7 @@ usersRouter.get(
 
 usersRouter.get(
   "/:id",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     UsersController.getUserById(req, res);
   }),

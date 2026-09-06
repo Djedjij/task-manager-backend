@@ -2,7 +2,7 @@ import { AppError } from "../errors/AppError";
 import {
   generateAccessToken,
   generateRefreshToken,
-  verifyRefreshToken,
+  verifyAndDecodeRefreshToken,
 } from "../helpers/jwtHelpers";
 import { comparePassword, hashPassword } from "../helpers/passwordHelpers";
 import { prisma } from "../lib/prisma";
@@ -12,8 +12,7 @@ import {
   TRegisterUserDto,
   TTokenPayload,
 } from "../types/auth.types";
-
-export class AuthService {
+class AuthService {
   async register(data: TRegisterUserDto): Promise<TAuthResponse> {
     const existingUser = await prisma.user.findUnique({
       where: { email: data.email },
@@ -37,16 +36,16 @@ export class AuthService {
     };
 
     const accessToken = generateAccessToken(tokenPayload);
-    const refreshToken = generateRefreshToken(tokenPayload);
+    const { token, hashedToken } = await generateRefreshToken(tokenPayload);
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken },
+      data: { refreshToken: hashedToken },
     });
 
     return {
       accessToken,
-      refreshToken,
+      refreshToken: token,
       user: {
         id: user.id,
         email: user.email,
@@ -60,7 +59,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new AppError("Incorrect email or password");
+      throw new AppError("Incorrect email or password", 401);
     }
 
     const isValidPassword = await comparePassword(
@@ -69,7 +68,7 @@ export class AuthService {
     );
 
     if (!isValidPassword) {
-      throw new AppError("Incorrect email or password");
+      throw new AppError("Incorrect email or password", 401);
     }
 
     const tokenPayload: TTokenPayload = {
@@ -78,16 +77,16 @@ export class AuthService {
     };
 
     const accessToken = generateAccessToken(tokenPayload);
-    const refreshToken = generateRefreshToken(tokenPayload);
+    const { token, hashedToken } = await generateRefreshToken(tokenPayload);
 
     await prisma.user.update({
       where: { id: user.id },
-      data: { refreshToken, lastLoginAt: Date.now() },
+      data: { refreshToken: hashedToken },
     });
 
     return {
       accessToken,
-      refreshToken,
+      refreshToken: token,
       user: {
         id: user.id,
         email: user.email,
@@ -99,7 +98,8 @@ export class AuthService {
     refreshToken: string,
   ): Promise<{ accessToken: string }> {
     try {
-      const payload = verifyRefreshToken(refreshToken);
+      const payload = verifyAndDecodeRefreshToken(refreshToken);
+
       const user = await prisma.user.findUnique({
         where: { id: payload.userId },
       });
@@ -142,7 +142,7 @@ export class AuthService {
 
     const isValidPassword = await comparePassword(
       currentPassword,
-      user.password,
+      user.hashedPassword,
     );
 
     if (!isValidPassword) {
@@ -157,3 +157,5 @@ export class AuthService {
     });
   }
 }
+
+export const authService = new AuthService();

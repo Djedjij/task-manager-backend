@@ -5,6 +5,7 @@ import cors from "cors";
 import { AppError } from "./errors/AppError";
 import { corsOptions } from "./helpers/corsOptions";
 import { prisma } from "./lib/prisma";
+import cookieParser from "cookie-parser";
 
 // middlewares
 import { errorMiddleware } from "./middlewares/errorMiddleware";
@@ -13,6 +14,7 @@ import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 //routes
 import usersRouter from "./routes/userRouter";
 import taskRouter from "./routes/taskRouter";
+import authRouter from "./routes/authRouter";
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
@@ -22,12 +24,15 @@ const app = express();
 const PORT = process.env.PORT ?? 5000;
 
 // Middlewares
+app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json());
 app.use(correlator());
+app.use(express.urlencoded({ extended: true }));
 app.use(loggingMiddleware);
-app.use(cors(corsOptions));
 
 // Routes
+app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/tasks", taskRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
