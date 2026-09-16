@@ -66,15 +66,16 @@ export const refreshToken = async (
   next: NextFunction,
 ) => {
   try {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
-      throw new AppError("Refresh token required", 400);
+      throw new AppError("Refresh token required", 401);
     }
 
-    const result = await authService.refreshAccessToken(refreshToken);
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      await authService.refreshAccessToken(refreshToken);
 
-    res.cookie("refreshToken", result, {
+    res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -82,6 +83,7 @@ export const refreshToken = async (
 
     res.status(200).json({
       success: true,
+      accessToken: newAccessToken,
     });
     
   } catch (error) {

@@ -2,6 +2,7 @@ import { AppError } from "../errors/AppError";
 import {
   generateAccessToken,
   generateRefreshToken,
+  validateRefreshToken,
   verifyAndDecodeRefreshToken,
 } from "../helpers/jwtHelpers";
 import { comparePassword, hashPassword } from "../helpers/passwordHelpers";
@@ -96,28 +97,42 @@ class AuthService {
 
   async refreshAccessToken(
     refreshToken: string,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    let payload: { userId: string; email: string };
     try {
-      const payload = verifyAndDecodeRefreshToken(refreshToken);
-
-      const user = await prisma.user.findUnique({
-        where: { id: payload.userId },
-      });
-
-      if (!user || user.refreshToken !== refreshToken) {
-        throw new AppError("Invalid refresh token", 401);
-      }
-
-      const newAccessToken = generateAccessToken({
-        userId: user.id,
-        email: user.email,
-      });
-
-      return { accessToken: newAccessToken };
-    } catch (error) {
-      console.log(error);
+      payload = verifyAndDecodeRefreshToken(refreshToken);
+    } catch {
       throw new AppError("Invalid refresh token", 401);
     }
+
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+    });
+
+    if (!user?.refreshToken) {
+      throw new AppError("Invalid refresh token", 401);
+    }
+
+    const isValid = await validateRefreshToken(refreshToken, user.refreshToken);
+    if (!isValid) {
+      throw new AppError("Invalid refresh token", 401);
+    }
+
+    const newAccessToken = generateAccessToken({
+      userId: user.id,
+      email: user.email,
+    });
+
+    const { token: refreshTokenNew, hashedToken } = await generateRefreshToken({
+      userId: user.id,
+      email: user.email,
+    });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: hashedToken },
+    });
+
+    return { accessToken: newAccessToken, refreshToken: refreshTokenNew };
   }
 
   async logout(userId: string): Promise<void> {

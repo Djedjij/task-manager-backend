@@ -9,6 +9,6 @@ const doc = {
 };
 
 const outputFile = "./swagger-output.json";
-const endpointsFiles = ["./routes/taskRouter.ts", "./routes/userRouter.ts"]; // Путь к вашим главным роутам
+const endpointsFiles = ["./routes/taskRouter.ts", "./routes/userRouter.ts"];
 
 swaggerAutogen(outputFile, endpointsFiles, doc);

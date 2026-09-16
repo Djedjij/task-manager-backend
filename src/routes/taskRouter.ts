@@ -1,6 +1,7 @@
 import express from "express";
 import { Request, Response } from "express";
 import { asyncWrapper } from "../helpers/asyncWrapper";
+import { authenticate } from "../middlewares/authMiddleware";
 import TasksController from "../controllers/tasksController";
 
 const taskRouter = express.Router();
@@ -9,6 +10,7 @@ const taskRouter = express.Router();
 
 taskRouter.post(
   "/",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.createTask(req, res);
   }),
@@ -18,6 +20,7 @@ taskRouter.post(
 
 taskRouter.get(
   "/user/:id",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.getTasksByUserId(req, res);
   }),
@@ -25,6 +28,7 @@ taskRouter.get(
 
 taskRouter.get(
   "/",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.getTasks(req, res);
   }),
@@ -32,6 +36,7 @@ taskRouter.get(
 
 taskRouter.get(
   "/:id",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.getTask(req, res);
   }),
@@ -41,6 +46,7 @@ taskRouter.get(
 
 taskRouter.delete(
   "/:id",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.deleteTask(req, res);
   }),
@@ -50,6 +56,7 @@ taskRouter.delete(
 
 taskRouter.put(
   "/:id",
+  [authenticate],
   asyncWrapper(async (req: Request, res: Response) => {
     await TasksController.updateTask(req, res);
   }),
