@@ -52,10 +52,12 @@ export const ProjectService = {
     });
   },
 
-  async getProjects() {
+  async getProjects(take: number, skip: number, orderBy: Prisma.SortOrder) {
     return await prisma.project.findMany({
       select: projectSelect,
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: orderBy },
+      take,
+      skip,
     });
   },
 
@@ -123,11 +125,7 @@ export const ProjectService = {
    * Добавляет пользователя в проект. Владелец проекта автоматически
    * не добавляется как участник, но может быть добавлен явно.
    */
-  async addMember(
-    projectId: string,
-    userId: string,
-    role: string = "member",
-  ) {
+  async addMember(projectId: string, userId: string, role: string = "member") {
     return await prisma.projectMember.create({
       data: { projectId, userId, role },
       select: {

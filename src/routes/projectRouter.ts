@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { asyncWrapper } from "../helpers/asyncWrapper";
 import { authenticate } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validationMiddleware";
+import { paginate } from "../middlewares/paginationMiddleware";
 import {
   createProjectSchema,
   updateProjectSchema,
@@ -24,7 +25,7 @@ projectRouter.post(
 // READ (все проекты)
 projectRouter.get(
   "/",
-  [authenticate],
+  [authenticate, paginate],
   asyncWrapper(async (req: Request, res: Response) => {
     await ProjectController.getProjects(req, res);
   }),

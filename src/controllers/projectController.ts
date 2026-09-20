@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { ProjectService } from "../services/projectService";
 import { AppError } from "../errors/AppError";
 import { AuthRequest } from "../middlewares/authMiddleware";
@@ -7,6 +7,11 @@ import {
   UpdateProjectInput,
   AddProjectMemberInput,
 } from "../schemas/projectSchema";
+import {
+  BASE_LIMIT,
+  BASE_OFFSET,
+  BASE_ORDER_BY,
+} from "../consts/paginationConsts";
 
 class ProjectController {
   /**
@@ -32,8 +37,13 @@ class ProjectController {
   /**
    * Все проекты (без привязки к пользователю).
    */
-  async getProjects(_req: AuthRequest, res: Response) {
-    const projects = await ProjectService.getProjects();
+  async getProjects(req: Request, res: Response) {
+    const { take, skip, orderBy } = req.pagination ?? {
+      take: BASE_LIMIT,
+      skip: BASE_OFFSET,
+      orderBy: BASE_ORDER_BY,
+    };
+    const projects = await ProjectService.getProjects(take, skip, orderBy);
     res.status(200).json(projects);
   }
 
