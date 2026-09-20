@@ -9,7 +9,6 @@ const userSafeSelect = Prisma.validator<Prisma.UserSelect>()({
   updatedAt: true,
 });
 
-W
 export type UserSafeDto = Prisma.UserGetPayload<{
   select: typeof userSafeSelect;
 }>;
