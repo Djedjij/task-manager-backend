@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 import correlator from "express-correlation-id";
 import cors from "cors";
 import { AppError } from "./errors/AppError";
-import { corsOptions } from "./helpers/corsOptions";
+import { corsOptions } from "./helpers";
 import { prisma } from "./lib/prisma";
 import cookieParser from "cookie-parser";
 

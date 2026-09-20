@@ -1,11 +1,12 @@
 import { AppError } from "../errors/AppError";
 import {
+  comparePassword,
   generateAccessToken,
   generateRefreshToken,
+  hashPassword,
   validateRefreshToken,
   verifyAndDecodeRefreshToken,
-} from "../helpers/jwtHelpers";
-import { comparePassword, hashPassword } from "../helpers/passwordHelpers";
+} from "../helpers";
 import { prisma } from "../lib/prisma";
 import {
   TAuthResponse,

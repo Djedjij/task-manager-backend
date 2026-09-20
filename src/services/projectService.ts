@@ -53,12 +53,15 @@ export const ProjectService = {
   },
 
   async getProjects(take: number, skip: number, orderBy: Prisma.SortOrder) {
-    return await prisma.project.findMany({
-      select: projectSelect,
-      orderBy: { createdAt: orderBy },
-      take,
-      skip,
-    });
+    return await prisma.$transaction([
+      prisma.project.findMany({
+        select: projectSelect,
+        orderBy: { createdAt: orderBy },
+        take,
+        skip,
+      }),
+      prisma.project.count(),
+    ]);
   },
 
   /**

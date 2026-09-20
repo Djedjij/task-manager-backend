@@ -12,6 +12,7 @@ import {
   BASE_OFFSET,
   BASE_ORDER_BY,
 } from "../consts/paginationConsts";
+import { sendPaginated } from "../helpers";
 
 class ProjectController {
   /**
@@ -38,13 +39,13 @@ class ProjectController {
    * Все проекты (без привязки к пользователю).
    */
   async getProjects(req: Request, res: Response) {
-    const { take, skip, orderBy } = req.pagination ?? {
-      take: BASE_LIMIT,
-      skip: BASE_OFFSET,
-      orderBy: BASE_ORDER_BY,
-    };
-    const projects = await ProjectService.getProjects(take, skip, orderBy);
-    res.status(200).json(projects);
+    const { take, skip, orderBy } = req.pagination!;
+    const [projects, total] = await ProjectService.getProjects(
+      take,
+      skip,
+      orderBy,
+    );
+    sendPaginated(res, projects, total, { take, skip });
   }
 
   /**

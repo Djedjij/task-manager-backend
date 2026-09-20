@@ -1,6 +1,6 @@
 import express from "express";
 import { Response } from "express";
-import { asyncWrapper } from "../helpers/asyncWrapper";
+import { asyncWrapper } from "../helpers";
 import UsersController from "../controllers/usersController";
 import { authenticate, AuthRequest } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validationMiddleware";

@@ -1,6 +1,6 @@
 import express from "express";
 import { Request, Response } from "express";
-import { asyncWrapper } from "../helpers/asyncWrapper";
+import { asyncWrapper } from "../helpers";
 import { authenticate } from "../middlewares/authMiddleware";
 import { validate } from "../middlewares/validationMiddleware";
 import { paginate } from "../middlewares/paginationMiddleware";

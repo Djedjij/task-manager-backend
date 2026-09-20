@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { parseArgs } from "node:util";
 import { Prisma } from "@prisma/client";
-import { hashPassword } from "../src/helpers/passwordHelpers";
+import { hashPassword } from "../src/helpers";
 import { prisma } from "../src/lib/prisma";
 
 /**
