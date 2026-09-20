@@ -15,6 +15,7 @@ import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 import usersRouter from "./routes/userRouter";
 import taskRouter from "./routes/taskRouter";
 import authRouter from "./routes/authRouter";
+import projectRouter from "./routes/projectRouter";
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
@@ -35,6 +36,7 @@ app.use(loggingMiddleware);
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/tasks", taskRouter);
+app.use("/projects", projectRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.get("/health", (_req, res) => {

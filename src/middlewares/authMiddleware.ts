@@ -30,7 +30,7 @@ export const authenticate = (
     };
     next();
   } catch (error) {
-    throw new AppError("Invalid token", 401);
+    next(error instanceof AppError ? error : new AppError("Invalid token", 401));
   }
 };
 

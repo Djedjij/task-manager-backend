@@ -9,21 +9,16 @@ const userSafeSelect = Prisma.validator<Prisma.UserSelect>()({
   updatedAt: true,
 });
 
-//Создаем тип для данных, которые вернет этот запрос
+W
 export type UserSafeDto = Prisma.UserGetPayload<{
   select: typeof userSafeSelect;
 }>;
 
 export const UserService = {
-  async createUser(email: string, password: string) {
-    return await prisma.user.create({
-      data: { email, hashedPassword: password },
-    });
-  },
-
   async getUsers() {
     return await prisma.user.findMany({
       select: userSafeSelect,
+      orderBy: { createdAt: "asc" },
     });
   },
 

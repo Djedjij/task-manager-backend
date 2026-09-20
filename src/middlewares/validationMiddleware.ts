@@ -1,12 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 
-export const validate = (schema: z.ZodObject<any, any>) => {
+export const validate = (
+  schema: z.ZodObject<any, any>,
+  part: "body" | "params" = "body",
+) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      const validatedData = schema.parse(req.body);
+      const validatedData = schema.parse(req[part]);
 
-      req.body = validatedData;
+      if (part === "params") {
+        req.params = validatedData as Record<string, string>;
+      } else {
+        req.body = validatedData;
+      }
 
       next();
     } catch (error: unknown) {

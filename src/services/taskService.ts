@@ -9,7 +9,9 @@ export const TaskService = {
   },
 
   async getTasks() {
-    return await prisma.task.findMany();
+    return await prisma.task.findMany({
+      orderBy: { createdAt: "desc" },
+    });
   },
 
   async getTaskById(id: string) {
@@ -21,15 +23,21 @@ export const TaskService = {
   async getTasksByUserId(userId: string) {
     return await prisma.task.findMany({
       where: { userId },
+      orderBy: { createdAt: "desc" },
     });
   },
 
-  async updateTask(id: string, task: Prisma.TaskUpdateInput) {
+  async getTasksByProjectId(projectId: string) {
+    return await prisma.task.findMany({
+      where: { projectId },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+
+  async updateTask(id: string, task: Prisma.TaskUncheckedUpdateInput) {
     return await prisma.task.update({
       where: { id },
-      data: {
-        ...task,
-      },
+      data: task,
     });
   },
 

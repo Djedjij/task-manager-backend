@@ -10,5 +10,11 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Введите пароль"),
 });
 
+export const userIdParamSchema = z.object({
+  id: z.string().uuid("Неверный формат id"),
+});
+
+export type UserIdParam = z.infer<typeof userIdParamSchema>;
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;

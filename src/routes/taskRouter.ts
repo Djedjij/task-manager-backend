@@ -1,7 +1,15 @@
 import express from "express";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { asyncWrapper } from "../helpers/asyncWrapper";
-import { authenticate } from "../middlewares/authMiddleware";
+import { authenticate, AuthRequest } from "../middlewares/authMiddleware";
+import { validate } from "../middlewares/validationMiddleware";
+import {
+  createTaskSchema,
+  updateTaskSchema,
+  taskIdParamSchema,
+  taskProjectParamSchema,
+  taskUserParamSchema,
+} from "../schemas/taskSchema";
 import TasksController from "../controllers/tasksController";
 
 const taskRouter = express.Router();
@@ -10,34 +18,43 @@ const taskRouter = express.Router();
 
 taskRouter.post(
   "/",
-  [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  [authenticate, validate(createTaskSchema)],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.createTask(req, res);
   }),
 );
 
 //  GET
+// Статические сегменты объявляем до "/:id"
 
 taskRouter.get(
-  "/user/:id",
-  [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  "/user/:userId",
+  [authenticate, validate(taskUserParamSchema, "params")],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.getTasksByUserId(req, res);
+  }),
+);
+
+taskRouter.get(
+  "/project/:projectId",
+  [authenticate, validate(taskProjectParamSchema, "params")],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
+    await TasksController.getTasksByProjectId(req, res);
   }),
 );
 
 taskRouter.get(
   "/",
   [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.getTasks(req, res);
   }),
 );
 
 taskRouter.get(
   "/:id",
-  [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  [authenticate, validate(taskIdParamSchema, "params")],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.getTask(req, res);
   }),
 );
@@ -46,8 +63,8 @@ taskRouter.get(
 
 taskRouter.delete(
   "/:id",
-  [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  [authenticate, validate(taskIdParamSchema, "params")],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.deleteTask(req, res);
   }),
 );
@@ -56,8 +73,12 @@ taskRouter.delete(
 
 taskRouter.put(
   "/:id",
-  [authenticate],
-  asyncWrapper(async (req: Request, res: Response) => {
+  [
+    authenticate,
+    validate(taskIdParamSchema, "params"),
+    validate(updateTaskSchema),
+  ],
+  asyncWrapper(async (req: AuthRequest, res: Response) => {
     await TasksController.updateTask(req, res);
   }),
 );
