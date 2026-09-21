@@ -6,6 +6,13 @@ datasource db {
   provider = "postgresql"
 }
 
+enum TaskStatus {
+  created
+  in_progress
+  done
+  cancelled
+}
+
 model User {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email     String   @unique
@@ -29,6 +36,8 @@ model Task {
   updatedAt DateTime @updatedAt
   userId    String?   @db.Uuid 
   projectId String?   @db.Uuid
+  status    TaskStatus @default(created)
+  tag String[] @default([])
 
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
