@@ -101,7 +101,7 @@ const buildProjects = (): Prisma.ProjectCreateManyInput[] =>
 
     return {
       id: projectUuid(index),
-      name: `Проект ${pad(index, 2)}: ${topic}`,
+      title: `Проект ${pad(index, 2)}: ${topic}`,
       description: `${topic}. Владелец: ${seedEmail(index)}`,
       ownerId: userUuid(index),
       createdAt: daysFromNow(-PROJECT_COUNT - 1 + index),

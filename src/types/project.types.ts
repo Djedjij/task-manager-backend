@@ -1,6 +1,6 @@
 export type TProjectResponse = {
   id: string;
-  name: string;
+  title: string;
   description: string | null;
   ownerId: string;
   createdAt: Date;
@@ -16,12 +16,12 @@ export type TProjectMemberResponse = {
 };
 
 export type TCreateProjectDto = {
-  name: string;
+  title: string;
   description?: string;
 };
 
 export type TUpdateProjectDto = {
-  name?: string;
+  title?: string;
   description?: string;
 };
 

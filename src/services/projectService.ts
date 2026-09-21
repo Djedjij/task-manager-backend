@@ -10,7 +10,7 @@ const projectOwnerSelect = Prisma.validator<Prisma.UserSelect>()({
 
 const projectSelect = Prisma.validator<Prisma.ProjectSelect>()({
   id: true,
-  name: true,
+  title: true,
   description: true,
   ownerId: true,
   createdAt: true,
@@ -19,7 +19,7 @@ const projectSelect = Prisma.validator<Prisma.ProjectSelect>()({
 
 const projectWithRelationsSelect = Prisma.validator<Prisma.ProjectSelect>()({
   id: true,
-  name: true,
+  title: true,
   description: true,
   ownerId: true,
   createdAt: true,

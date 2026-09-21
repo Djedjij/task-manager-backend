@@ -2,8 +2,9 @@ import cors from "cors";
 
 // Список сайтов, которым разрешено делать запросы к вашему API
 const allowedOrigins = [
-  "http://localhost:3000", // Локальный фронтенд (например, React/Next.js)
-  "https://my-production-app.com", // Продакшен фронтенд
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://my-production-app.com",
 ];
 
 export const corsOptions: cors.CorsOptions = {

@@ -27,7 +27,7 @@ class ProjectController {
     const body = req.body as CreateProjectInput;
 
     const project = await ProjectService.createProject({
-      name: body.name,
+      title: body.title,
       description: body.description ?? null,
       ownerId: userId,
     });
@@ -112,7 +112,7 @@ class ProjectController {
 
     const body = req.body as UpdateProjectInput;
     const updated = await ProjectService.updateProject(id, {
-      ...(body.name !== undefined ? { name: body.name } : {}),
+      ...(body.title !== undefined ? { title: body.title } : {}),
       ...(body.description !== undefined
         ? { description: body.description }
         : {}),
