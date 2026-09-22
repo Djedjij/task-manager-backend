@@ -1,12 +1,14 @@
 import { z } from "zod";
+import { ETaskStatus } from "../types/task.types";
 
 const id = z.string().uuid("Неверный формат id");
 
 export const createTaskSchema = z.object({
-  title: z.string().trim().min(1, "Название задачи обязательно").max(255),
+  title: z.string().trim().min(1, "Task title required").max(255),
   description: z.string().trim().max(1000).nullish(),
   dueAt: z.coerce.date().nullish(),
   projectId: id.nullish(),
+  status: z.enum(ETaskStatus),
 });
 
 export const updateTaskSchema = createTaskSchema.partial();

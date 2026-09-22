@@ -9,6 +9,7 @@ import {
   TaskIdParam,
   TaskProjectParam,
   TaskUserParam,
+  updateTaskSchema,
 } from "../schemas/taskSchema";
 
 class TaskController {
@@ -108,7 +109,7 @@ class TaskController {
     const { id } = req.params as TaskIdParam;
     await this.getOwnTask(id, userId);
 
-    const body = req.body as UpdateTaskInput;
+    const body = updateTaskSchema.parse(req.body);
 
     if (body.projectId) {
       const isMember = await ProjectService.isProjectMember(
@@ -120,16 +121,7 @@ class TaskController {
       }
     }
 
-    // Передаём только разрешённые поля: id, userId, createdAt из body игнорируются
-    const updatedTask = await TaskService.updateTask(id, {
-      ...(body.title !== undefined ? { title: body.title } : {}),
-      ...(body.description !== undefined
-        ? { description: body.description }
-        : {}),
-      ...(body.dueAt !== undefined ? { dueAt: body.dueAt } : {}),
-      ...(body.projectId !== undefined ? { projectId: body.projectId } : {}),
-    });
-
+    const updatedTask = await TaskService.updateTask(id, body);
     res.status(200).json(updatedTask);
   }
 
