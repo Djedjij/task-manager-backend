@@ -47,8 +47,11 @@ export const login = async (
 
     res.cookie("refreshToken", result.refreshToken, {
       httpOnly: true,
+      secure: false,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      domain: undefined,
+      path: "/",
     });
 
     res.status(201).json({
@@ -77,15 +80,16 @@ export const refreshToken = async (
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
+      secure: false,
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      domain: undefined,
     });
 
     res.status(200).json({
       success: true,
       accessToken: newAccessToken,
     });
-    
   } catch (error) {
     next(error);
   }
