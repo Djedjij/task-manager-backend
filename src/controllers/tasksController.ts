@@ -3,6 +3,7 @@ import { TaskService } from "../services/taskService";
 import { ProjectService } from "../services/projectService";
 import { AppError } from "../errors/AppError";
 import { AuthRequest } from "../middlewares/authMiddleware";
+import { ETaskStatus } from "../types/task.types";
 import {
   CreateTaskInput,
   UpdateTaskInput,
@@ -57,6 +58,8 @@ class TaskController {
       dueAt: body.dueAt ?? null,
       projectId,
       userId,
+      status: body.status ?? ETaskStatus.created,
+      tag: body.tag ?? [],
     });
 
     res.status(201).json(newTask);

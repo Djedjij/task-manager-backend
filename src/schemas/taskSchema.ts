@@ -8,7 +8,8 @@ export const createTaskSchema = z.object({
   description: z.string().trim().max(1000).nullish(),
   dueAt: z.coerce.date().nullish(),
   projectId: id.nullish(),
-  status: z.enum(ETaskStatus),
+  status: z.enum(ETaskStatus).optional(),
+  tag: z.array(z.string().trim().min(1).max(30)).max(20).optional(),
 });
 
 export const updateTaskSchema = createTaskSchema.partial();
